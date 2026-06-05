@@ -1,0 +1,37 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    background: #f4f4f9;
+}
+h1 {
+    color: #333;
+}
+form input {
+    padding: 10px;
+    width: 300px;
+}
+form button {
+    padding: 10px;
+    background: #007BFF;
+    color: white;
+    border: none;
+    cursor: pointer;
+}
+form button:hover {
+    background: #0056b3;
+}
+
+#voice-button {
+    margin-left: 10px;
+    background: #28a745;
+}
+
+#voice-button.listening {
+    background: #dc3545;
+}
+
+.voice-status {
+    display: inline-block;
+    margin-left: 10px;
+    color: #555;
+}
