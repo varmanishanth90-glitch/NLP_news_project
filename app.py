@@ -2,6 +2,7 @@ import os
 from flask import Flask, render_template, request
 from db import get_news
 from nlp_utils import process_text, summarize_text, categorize
+from next_word_predictor import predict_next_words, get_sample_prompts
 
 app = Flask("NLP News App")
 
@@ -58,6 +59,17 @@ def news_search():
                     error = f"Error processing results: {str(e)}"
                     print(f"Processing error: {e}")
     return render_template("index.html", results=results, query=query, error=error)
+
+@app.route("/nextword", methods=["GET", "POST"])
+def next_word_predictor():
+    prompt = ""
+    suggestions = []
+    if request.method == "POST":
+        prompt = (request.form.get("prompt") or "").strip()
+        if prompt:
+            suggestions = predict_next_words(prompt, top_n=5)
+    examples = get_sample_prompts(5)
+    return render_template("nextword.html", prompt=prompt, suggestions=suggestions, examples=examples)
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))

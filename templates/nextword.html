@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Next Word Predictor</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>✨ Next Word Predictor</h1>
+        <a class="app-button placeholder" href="/">Back to Home</a>
+        <form method="POST" class="search-form">
+            <div class="search-row">
+                <input type="text" name="prompt" placeholder="Type a phrase and predict the next word..." value="{{ prompt|default('') }}" required>
+                <button type="submit">Predict</button>
+            </div>
+        </form>
+
+        {% if suggestions %}
+            <div class="results-header">Next word suggestions</div>
+            <ul class="results-list">
+                {% for word in suggestions %}
+                    <li class="result-item">{{ word }}</li>
+                {% endfor %}
+            </ul>
+        {% elif prompt is defined %}
+            <div class="no-results">No suggestions available for "{{ prompt }}"</div>
+        {% endif %}
+
+        <div class="note">
+            <strong>Dataset sample</strong>
+            <ul>
+                {% for example in examples %}
+                    <li>{{ example }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+</body>
+</html>
