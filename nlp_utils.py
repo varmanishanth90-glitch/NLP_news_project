@@ -91,6 +91,9 @@ CATEGORY_TRAINING_DATA = [
     ("Tourism rebounds as countries ease travel restrictions", "Travel"),
     ("Top 10 destinations for summer travel announced", "Travel"),
     ("Travel app introduces new itinerary planning features", "Travel"),
+    ("University launches scholarship program for first-generation students", "Education"),
+    ("New study finds improvements in remote learning engagement", "Education"),
+    ("School district approves curriculum changes for STEM classes", "Education"),
 ]
 
 CATEGORY_PRIORS = {}
@@ -204,6 +207,6 @@ def summarize_text(text, word_limit=30):
 def categorize(text):
     predicted = predict_category(text)
     # Map the prediction to more application-friendly categories
-    if predicted in {"Finance", "Sports", "Politics", "Technology", "Health", "Entertainment", "War", "Automobile", "Airlines", "Train", "Travel"}:
+    if predicted in {"Finance", "Sports", "Politics", "Technology", "Health", "Entertainment", "War", "Automobile", "Airlines", "Train", "Travel", "Education"}:
         return predicted
     return "General"
