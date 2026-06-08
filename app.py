@@ -8,6 +8,10 @@ app = Flask("NLP News App")
 def landing():
     return render_template("landing.html")
 
+@app.route("/health")
+def health():
+    return {"status": "ok"}, 200
+
 @app.route("/news", methods=["GET", "POST"])
 def news_search():
     results = []
@@ -20,25 +24,38 @@ def news_search():
         else:
             try:
                 news_items = get_news()
+                if not news_items:
+                    error = "No news items available. Please try again later."
+                    news_items = []
             except Exception as e:
-                error = f"Unable to fetch news items: {e}"
+                error = f"Database connection error. Please try again later."
                 news_items = []
+                print(f"Database error: {e}")
 
-            seen_titles = set()  # Track seen titles to avoid duplicates
-            for item in news_items:
-                title = item.get("title") or ""
-                category = categorize(title)
-                if ((query.lower() in title.lower()) or (query.lower() in category.lower())) and title not in seen_titles:
-                    seen_titles.add(title)
-                    processed = process_text(title)
-                    summary = summarize_text(title)
-                    results.append({
-                        "title": title,
-                        "url": item.get("url") or "#",
-                        "summary": summary,
-                        "category": category,
-                        "tokens": processed["tokens"]
-                    })
+            if news_items:
+                try:
+                    seen_titles = set()  # Track seen titles to avoid duplicates
+                    for item in news_items:
+                        try:
+                            title = item.get("title") or ""
+                            category = categorize(title)
+                            if ((query.lower() in title.lower()) or (query.lower() in category.lower())) and title not in seen_titles:
+                                seen_titles.add(title)
+                                processed = process_text(title)
+                                summary = summarize_text(title)
+                                results.append({
+                                    "title": title,
+                                    "url": item.get("url") or "#",
+                                    "summary": summary,
+                                    "category": category,
+                                    "tokens": processed["tokens"]
+                                })
+                        except Exception as item_error:
+                            print(f"Error processing item: {item_error}")
+                            continue
+                except Exception as e:
+                    error = f"Error processing results: {str(e)}"
+                    print(f"Processing error: {e}")
     return render_template("index.html", results=results, query=query, error=error)
 
 if __name__ == "__main__":
