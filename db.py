@@ -35,7 +35,7 @@ def get_news():
     conn = _get_mysql_connection()
     cursor = conn.cursor(dictionary=True)
     cursor.execute(
-        "SELECT DISTINCT id, title, url, published_at, source_name FROM google_news ORDER BY published_at DESC LIMIT 50"
+        "SELECT DISTINCT id, title, url, published_at, source_name, description, content FROM google_news ORDER BY published_at DESC LIMIT 50"
     )
     rows = cursor.fetchall()
     conn.close()

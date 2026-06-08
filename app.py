@@ -29,12 +29,15 @@ def news_search():
             for item in all_news[:30]:  # Get first 30 records
                 try:
                     title = item.get("title") or ""
-                    category = categorize(title)
+                    description = item.get("description") or ""
+                    content = item.get("content") or ""
+                    category = categorize(title, description, content)
                     sample_data.append({
                         "title": title,
                         "url": item.get("url") or "#",
                         "category": category,
-                        "source": item.get("source_name") or "Unknown"
+                        "source": item.get("source_name") or "Unknown",
+                        "description": description[:100] if description else ""
                     })
                 except Exception:
                     continue
@@ -62,16 +65,25 @@ def news_search():
                     for item in news_items:
                         try:
                             title = item.get("title") or ""
-                            category = categorize(title)
-                            if ((query.lower() in title.lower()) or (query.lower() in category.lower())) and title not in seen_titles:
+                            description = item.get("description") or ""
+                            content = item.get("content") or ""
+                            category = categorize(title, description, content)
+                            
+                            # Search across all text fields
+                            search_text = f"{title} {description} {content} {category}".lower()
+                            if (query.lower() in search_text) and title not in seen_titles:
                                 seen_titles.add(title)
-                                processed = process_text(title)
-                                summary = summarize_text(title)
+                                # Combine all text for better summarization
+                                combined_text = f"{title} {description} {content}"
+                                processed = process_text(combined_text)
+                                summary = summarize_text(combined_text)
                                 results.append({
                                     "title": title,
                                     "url": item.get("url") or "#",
                                     "summary": summary,
                                     "category": category,
+                                    "description": description,
+                                    "content": content[:200] if content else "",
                                     "tokens": processed["tokens"]
                                 })
                         except Exception as item_error:

@@ -204,8 +204,10 @@ def summarize_text(text, word_limit=30):
     return " ".join(tokens[:word_limit])
 
 
-def categorize(text):
-    predicted = predict_category(text)
+def categorize(text, description="", content=""):
+    # Combine text fields for better categorization
+    combined_text = f"{text} {description} {content}"
+    predicted = predict_category(combined_text)
     # Map the prediction to more application-friendly categories
     if predicted in {"Finance", "Sports", "Politics", "Technology", "Health", "Entertainment", "War", "Automobile", "Airlines", "Train", "Travel", "Education"}:
         return predicted

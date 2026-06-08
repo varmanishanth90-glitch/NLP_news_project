@@ -239,6 +239,8 @@ h1 {
 }
 
 .result-meta,
+.result-description,
+.result-content,
 .result-summary {
     margin-top: 8px;
     color: #475569;
@@ -246,6 +248,8 @@ h1 {
 }
 
 .result-meta span,
+.result-description span,
+.result-content span,
 .result-summary span {
     font-weight: 600;
     color: #111827;

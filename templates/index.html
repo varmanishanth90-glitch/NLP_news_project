@@ -32,6 +32,12 @@
                         <li class="result-item">
                             <a href="{{ r['url'] }}" target="_blank">{{ r['title'] }}</a>
                             <div class="result-meta"><span>Category:</span> {{ r['category'] }}</div>
+                            {% if r['description'] %}
+                                <div class="result-description"><span>Description:</span> {{ r['description'] }}</div>
+                            {% endif %}
+                            {% if r['content'] %}
+                                <div class="result-content"><span>Content:</span> {{ r['content'] }}{% if r['content']|length >= 200 %}...{% endif %}</div>
+                            {% endif %}
                             <div class="result-summary"><span>Summary:</span> {{ r['summary'] }}</div>
                         </li>
                     {% endfor %}
