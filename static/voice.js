@@ -31,6 +31,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const transcript = event.results[0][0].transcript;
         queryInput.value = transcript;
         voiceStatus.textContent = `Captured: "${transcript}"`;
+        // Auto-submit the form
+        queryInput.form.submit();
     });
 
     recognition.addEventListener('error', (event) => {

@@ -9,7 +9,7 @@ def get_news():
         database="SQLRDSAWS"
     )
     cursor = conn.cursor(dictionary=True)
-    cursor.execute("SELECT id, title, url, published_at, source_name FROM google_news ORDER BY published_at DESC LIMIT 50")
+    cursor.execute("SELECT DISTINCT id, title, url, published_at, source_name FROM google_news ORDER BY published_at DESC LIMIT 50")
     rows = cursor.fetchall()
     conn.close()
     return rows

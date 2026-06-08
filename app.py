@@ -20,9 +20,11 @@ def index():
                 error = f"Unable to fetch news items: {e}"
                 news_items = []
 
+            seen_titles = set()  # Track seen titles to avoid duplicates
             for item in news_items:
                 title = item.get("title") or ""
-                if query.lower() in title.lower():
+                if query.lower() in title.lower() and title not in seen_titles:
+                    seen_titles.add(title)
                     processed = process_text(title)
                     summary = summarize_text(title)
                     category = categorize(title)
