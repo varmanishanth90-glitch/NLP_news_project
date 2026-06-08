@@ -3,6 +3,8 @@ from nltk.tokenize import word_tokenize
 from nltk.stem import PorterStemmer, WordNetLemmatizer
 from collections import defaultdict, Counter
 import math
+import os
+import pickle
 
 RESOURCE_PATHS = {
     'punkt': 'tokenizers/punkt',
@@ -24,6 +26,9 @@ try:
     stop_words = set(nltk.corpus.stopwords.words('english'))
 except LookupError:
     stop_words = set()
+
+# Model persistence
+MODEL_FILE = os.path.join(os.path.dirname(__file__), 'category_model.pkl')
 
 CATEGORY_TRAINING_DATA = [
     ("Stocks surge after strong corporate earnings", "Finance"),
@@ -56,12 +61,59 @@ CATEGORY_TRAINING_DATA = [
     ("Nutrition guidelines emphasize balanced diets", "Health"),
     ("Fitness app launches new training program", "Health"),
     ("Hospital expands services with advanced care", "Health"),
+    ("Ceasefire talks begin after weeks of intense fighting", "War"),
+    ("Military forces advance near strategic city", "War"),
+    ("Conflict causes displacement of thousands of civilians", "War"),
+    ("Automaker recalls thousands of vehicles over safety defect", "Automobile"),
+    ("New electric car model promises increased range", "Automobile"),
+    ("Auto sales rise as demand for SUVs continues", "Automobile"),
+    ("Airline extends cancellation policy amid weather disruptions", "Airlines"),
+    ("Budget carrier launches new international routes", "Airlines"),
+    ("Airline reports record passenger numbers this quarter", "Airlines"),
+    ("High-speed rail project receives government approval", "Train"),
+    ("Train services disrupted after signal failure", "Train"),
+    ("Commuter rail upgrades improve punctuality", "Train"),
+    ("Tourism rebounds as countries ease travel restrictions", "Travel"),
+    ("Top 10 destinations for summer travel announced", "Travel"),
+    ("Travel app introduces new itinerary planning features", "Travel"),
 ]
 
 CATEGORY_PRIORS = {}
 WORD_COUNTS = defaultdict(Counter)
 VOCABULARY = set()
 TOTAL_DOCS = 0
+
+
+def save_model(path=MODEL_FILE):
+    try:
+        data = {
+            'priors': CATEGORY_PRIORS,
+            'word_counts': {k: dict(v) for k, v in WORD_COUNTS.items()},
+            'vocabulary': list(VOCABULARY),
+            'total_docs': TOTAL_DOCS,
+        }
+        with open(path, 'wb') as f:
+            pickle.dump(data, f)
+    except Exception:
+        pass
+
+
+def load_model(path=MODEL_FILE):
+    global CATEGORY_PRIORS, WORD_COUNTS, VOCABULARY, TOTAL_DOCS
+    if not os.path.exists(path):
+        return False
+    try:
+        with open(path, 'rb') as f:
+            data = pickle.load(f)
+        CATEGORY_PRIORS = data.get('priors', {})
+        WORD_COUNTS = defaultdict(Counter)
+        for k, v in data.get('word_counts', {}).items():
+            WORD_COUNTS[k] = Counter(v)
+        VOCABULARY = set(data.get('vocabulary', []))
+        TOTAL_DOCS = int(data.get('total_docs', 0))
+        return True
+    except Exception:
+        return False
 
 
 def normalize_text(text):
@@ -113,7 +165,13 @@ def predict_category(text):
     return best_category or "General"
 
 
-train_category_model()
+# Load persisted model if available, otherwise train and save
+if not load_model():
+    train_category_model()
+    try:
+        save_model()
+    except Exception:
+        pass
 
 
 def process_text(text):
@@ -131,6 +189,6 @@ def summarize_text(text, word_limit=30):
 def categorize(text):
     predicted = predict_category(text)
     # Map the prediction to more application-friendly categories
-    if predicted in {"Finance", "Sports", "Politics", "Technology", "Health", "Entertainment"}:
+    if predicted in {"Finance", "Sports", "Politics", "Technology", "Health", "Entertainment", "War", "Automobile", "Airlines", "Train", "Travel"}:
         return predicted
     return "General"
