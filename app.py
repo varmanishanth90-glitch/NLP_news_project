@@ -19,6 +19,28 @@ def news_search():
     results = []
     query = ""
     error = None
+    sample_data = []
+    
+    # Always fetch sample data for display
+    try:
+        all_news = get_news()
+        if all_news:
+            sample_data = []
+            for item in all_news[:30]:  # Get first 30 records
+                try:
+                    title = item.get("title") or ""
+                    category = categorize(title)
+                    sample_data.append({
+                        "title": title,
+                        "url": item.get("url") or "#",
+                        "category": category,
+                        "source": item.get("source_name") or "Unknown"
+                    })
+                except Exception:
+                    continue
+    except Exception as e:
+        print(f"Error fetching sample data: {e}")
+    
     if request.method == "POST":
         query = (request.form.get("query") or "").strip()
         if not query:
@@ -58,7 +80,7 @@ def news_search():
                 except Exception as e:
                     error = f"Error processing results: {str(e)}"
                     print(f"Processing error: {e}")
-    return render_template("index.html", results=results, query=query, error=error)
+    return render_template("index.html", results=results, query=query, error=error, sample_data=sample_data)
 
 @app.route("/nextword", methods=["GET", "POST"])
 def next_word_predictor():

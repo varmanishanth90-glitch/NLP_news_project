@@ -5,38 +5,60 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="container">
-        <h1>🔎 News NLP Search</h1>
-        <a class="app-button placeholder" href="/">Back to Home</a>
-        <form method="POST" class="search-form">
-            <div class="search-row">
-                <input type="text" name="query" placeholder="Search by title or category..." required>
-                <button type="submit">Search</button>
-                <button type="button" id="voice-button">🎤 Voice input</button>
-            </div>
-            <div class="voice-row">
-                <span id="voice-status" class="voice-status"></span>
-            </div>
-        </form>
+    <div class="news-page-wrapper">
+        <div class="news-main">
+            <div class="container news-container">
+                <h1>🔎 News NLP Search</h1>
+                <a class="app-button placeholder" href="/">Back to Home</a>
+                <form method="POST" class="search-form">
+                    <div class="search-row">
+                        <input type="text" name="query" placeholder="Search by title or category..." required>
+                        <button type="submit">Search</button>
+                        <button type="button" id="voice-button">🎤 Voice input</button>
+                    </div>
+                    <div class="voice-row">
+                        <span id="voice-status" class="voice-status"></span>
+                    </div>
+                </form>
 
-        {% if error %}
-            <div class="error">{{ error }}</div>
-        {% endif %}
+                {% if error %}
+                    <div class="error">{{ error }}</div>
+                {% endif %}
 
-        {% if results %}
-            <div class="results-header">Results for "{{ query }}"</div>
-            <ul class="results-list">
-            {% for r in results %}
-                <li class="result-item">
-                    <a href="{{ r['url'] }}" target="_blank">{{ r['title'] }}</a>
-                    <div class="result-meta"><span>Category:</span> {{ r['category'] }}</div>
-                    <div class="result-summary"><span>Summary:</span> {{ r['summary'] }}</div>
-                </li>
-            {% endfor %}
-            </ul>
-        {% elif query %}
-            <div class="no-results">No news for your search "{{ query }}"</div>
-        {% endif %}
+                {% if results %}
+                    <div class="results-header">Results for "{{ query }}"</div>
+                    <ul class="results-list">
+                    {% for r in results %}
+                        <li class="result-item">
+                            <a href="{{ r['url'] }}" target="_blank">{{ r['title'] }}</a>
+                            <div class="result-meta"><span>Category:</span> {{ r['category'] }}</div>
+                            <div class="result-summary"><span>Summary:</span> {{ r['summary'] }}</div>
+                        </li>
+                    {% endfor %}
+                    </ul>
+                {% elif query %}
+                    <div class="no-results">No news for your search "{{ query }}"</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="news-sidebar">
+            <div class="sidebar-container">
+                <h2>📰 Sample Data Reference</h2>
+                <p class="sidebar-info">Browse available news records below for reference.</p>
+                <ul class="sample-list">
+                {% for item in sample_data %}
+                    <li class="sample-item">
+                        <div class="sample-title">{{ item['title'] }}</div>
+                        <div class="sample-meta">
+                            <span class="sample-category">{{ item['category'] }}</span>
+                            <span class="sample-source">{{ item['source'] }}</span>
+                        </div>
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
     <script src="/static/voice.js"></script>
 </body>
