@@ -4,14 +4,26 @@ from nltk.stem import PorterStemmer, WordNetLemmatizer
 from collections import defaultdict, Counter
 import math
 
-nltk.download('punkt')
-nltk.download('punkt_tab')
-nltk.download('wordnet')
-nltk.download('stopwords')
+RESOURCE_PATHS = {
+    'punkt': 'tokenizers/punkt',
+    'wordnet': 'corpora/wordnet',
+    'stopwords': 'corpora/stopwords',
+}
+for resource, path in RESOURCE_PATHS.items():
+    try:
+        nltk.data.find(path)
+    except LookupError:
+        try:
+            nltk.download(resource)
+        except Exception:
+            pass
 
 stemmer = PorterStemmer()
 lemmatizer = WordNetLemmatizer()
-stop_words = set(nltk.corpus.stopwords.words('english'))
+try:
+    stop_words = set(nltk.corpus.stopwords.words('english'))
+except LookupError:
+    stop_words = set()
 
 CATEGORY_TRAINING_DATA = [
     ("Stocks surge after strong corporate earnings", "Finance"),
