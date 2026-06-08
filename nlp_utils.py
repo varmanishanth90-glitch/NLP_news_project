@@ -5,8 +5,16 @@ from collections import defaultdict, Counter
 import math
 import os
 import pickle
+import re
+
+# Ensure NLTK downloads and data paths work in Render and local environments.
+PROJECT_ROOT = os.path.dirname(__file__)
+NLTK_DATA_DIR = os.path.join(PROJECT_ROOT, 'nltk_data')
+os.makedirs(NLTK_DATA_DIR, exist_ok=True)
+nltk.data.path.insert(0, NLTK_DATA_DIR)
 
 RESOURCE_PATHS = {
+    'punkt_tab': 'tokenizers/punkt_tab',
     'punkt': 'tokenizers/punkt',
     'wordnet': 'corpora/wordnet',
     'stopwords': 'corpora/stopwords',
@@ -16,7 +24,7 @@ for resource, path in RESOURCE_PATHS.items():
         nltk.data.find(path)
     except LookupError:
         try:
-            nltk.download(resource)
+            nltk.download(resource, download_dir=NLTK_DATA_DIR, quiet=True)
         except Exception:
             pass
 
@@ -26,6 +34,13 @@ try:
     stop_words = set(nltk.corpus.stopwords.words('english'))
 except LookupError:
     stop_words = set()
+
+
+def safe_word_tokenize(text):
+    try:
+        return word_tokenize(text)
+    except LookupError:
+        return re.findall(r"\b\w+\b", text)
 
 # Model persistence
 MODEL_FILE = os.path.join(os.path.dirname(__file__), 'category_model.pkl')
@@ -117,7 +132,7 @@ def load_model(path=MODEL_FILE):
 
 
 def normalize_text(text):
-    tokens = word_tokenize(text.lower())
+    tokens = safe_word_tokenize(text.lower())
     normalized = []
     for token in tokens:
         if token.isalpha() and token not in stop_words:
@@ -175,14 +190,14 @@ if not load_model():
 
 
 def process_text(text):
-    tokens = word_tokenize(text)
+    tokens = safe_word_tokenize(text)
     stems = [stemmer.stem(t) for t in tokens]
     lemmas = [lemmatizer.lemmatize(t) for t in tokens]
     return {"tokens": tokens, "stems": stems, "lemmas": lemmas}
 
 
 def summarize_text(text, word_limit=30):
-    tokens = word_tokenize(text)
+    tokens = safe_word_tokenize(text)
     return " ".join(tokens[:word_limit])
 
 
