@@ -2,7 +2,7 @@ from flask import Flask, render_template, request
 from db import get_news
 from nlp_utils import process_text, summarize_text, categorize
 
-app = Flask(__name__)
+app = Flask("NLP News App")
 
 @app.route("/", methods=["GET", "POST"])
 def index():
