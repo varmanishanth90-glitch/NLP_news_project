@@ -4,8 +4,12 @@ from nlp_utils import process_text, summarize_text, categorize
 
 app = Flask("NLP News App")
 
-@app.route("/", methods=["GET", "POST"])
-def index():
+@app.route("/")
+def landing():
+    return render_template("landing.html")
+
+@app.route("/news", methods=["GET", "POST"])
+def news_search():
     results = []
     query = ""
     error = None
