@@ -21,3 +21,4 @@ env.bak/
 dist/
 build/
 **/pip-wheel-metadata/
+.env
