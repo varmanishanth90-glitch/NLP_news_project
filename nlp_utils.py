@@ -198,7 +198,6 @@ CATEGORY_TRAINING_DATA = [
     ("Airline reports record passenger numbers", "Airlines"),
     ("Airport expansion project approved", "Airlines"),
     ("Airline increases flight frequency", "Airlines"),
-    ("Travel demand rebounds after restrictions", "Airlines"),
     ("Aircraft order placed with manufacturer", "Airlines"),
     ("Airline merges with competitor", "Airlines"),
     ("Flight safety record recognized", "Airlines"),
