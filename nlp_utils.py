@@ -85,12 +85,6 @@ CATEGORY_TRAINING_DATA = [
     ("Airline extends cancellation policy amid weather disruptions", "Airlines"),
     ("Budget carrier launches new international routes", "Airlines"),
     ("Airline reports record passenger numbers this quarter", "Airlines"),
-    ("High-speed rail project receives government approval", "Train"),
-    ("Train services disrupted after signal failure", "Train"),
-    ("Commuter rail upgrades improve punctuality", "Train"),
-    ("Tourism rebounds as countries ease travel restrictions", "Travel"),
-    ("Top 10 destinations for summer travel announced", "Travel"),
-    ("Travel app introduces new itinerary planning features", "Travel"),
     ("University launches scholarship program for first-generation students", "Education"),
     ("New study finds improvements in remote learning engagement", "Education"),
     ("School district approves curriculum changes for STEM classes", "Education"),
@@ -209,6 +203,6 @@ def categorize(text, description="", content=""):
     combined_text = f"{text} {description} {content}"
     predicted = predict_category(combined_text)
     # Map the prediction to more application-friendly categories
-    if predicted in {"Finance", "Sports", "Politics", "Technology", "Health", "Entertainment", "War", "Automobile", "Airlines", "Train", "Travel", "Education"}:
+    if predicted in {"Finance", "Sports", "Politics", "Technology", "Health", "Entertainment", "War", "Automobile", "Airlines", "Education"}:
         return predicted
     return "General"
