@@ -287,6 +287,12 @@ def augment_training_data():
 def train_category_model():
     global CATEGORY_PRIORS, WORD_COUNTS, VOCABULARY, TOTAL_DOCS
     
+    # Reset model state before training
+    CATEGORY_PRIORS = {}
+    WORD_COUNTS = defaultdict(Counter)
+    VOCABULARY = set()
+    TOTAL_DOCS = 0
+    
     # Use augmented data for better training
     training_data = augment_training_data()
     
@@ -296,7 +302,6 @@ def train_category_model():
         class_document_counts[category] += 1
         words = normalize_text(text)
         
-        # Add more weight to longer documents (more word variations)
         for word in words:
             WORD_COUNTS[category][word] += 1
             VOCABULARY.add(word)
@@ -335,10 +340,7 @@ def predict_category(text):
             best_score = score
             best_category = category
 
-    # If no category found or all scores very low, default to General
-    if best_category is None or best_score < -1000:
-        return "General"
-    
+    # Always return the best scoring category when words are present
     return best_category or "General"
 
 
